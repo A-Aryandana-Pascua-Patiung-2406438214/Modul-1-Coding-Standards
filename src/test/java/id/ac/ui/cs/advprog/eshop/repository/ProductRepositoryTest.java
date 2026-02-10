@@ -66,4 +66,67 @@ class ProductRepositoryTest {
         assertEquals(product2.getProductId(), savedProduct.getProductId());
         assertFalse(productIterator.hasNext());
     }
+
+    @Test
+    void testEditProduct() {
+        // Setup: Bikin produk dulu
+        Product product = new Product();
+        product.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        product.setProductName("Sampo Cap Bambang");
+        product.setProductQuantity(100);
+        productRepository.create(product);
+
+        // Action: Ubah nama & quantity
+        Product updatedProduct = new Product();
+        updatedProduct.setProductId(product.getProductId()); // ID harus sama
+        updatedProduct.setProductName("Sampo Cap Bango");
+        updatedProduct.setProductQuantity(50);
+        productRepository.update(updatedProduct);
+
+        // Verify: Cek apakah berubah
+        Product result = productRepository.findById(product.getProductId());
+        assertEquals("Sampo Cap Bango", result.getProductName());
+        assertEquals(50, result.getProductQuantity());
+    }
+
+    @Test
+    void testEditProductNotFound() {
+        // Action: Coba edit produk yang ID-nya ngasal
+        Product product = new Product();
+        product.setProductId("id-ngasal");
+        product.setProductName("Barang Gaib");
+        product.setProductQuantity(10);
+
+        Product result = productRepository.update(product);
+
+        // Verify: Harusnya return null karena gak ketemu
+        assertNull(result);
+    }
+
+    @Test
+    void testDeleteProduct() {
+        // Setup: Bikin produk
+        Product product = new Product();
+        product.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        product.setProductName("Sampo Cap Bambang");
+        product.setProductQuantity(100);
+        productRepository.create(product);
+
+        // Action: Hapus produk
+        productRepository.delete(product.getProductId());
+
+        // Verify: Cari produknya, harusnya null (atau iterator kosong)
+        Iterator<Product> productIterator = productRepository.findAll();
+        assertFalse(productIterator.hasNext());
+    }
+
+    @Test
+    void testDeleteProductNotFound() {
+        // Action: Coba hapus ID yang ga ada
+        productRepository.delete("id-ngasal");
+
+        // Verify: Pastikan tidak error dan list tetap kosong (karena emang ga ada isinya)
+        Iterator<Product> productIterator = productRepository.findAll();
+        assertFalse(productIterator.hasNext());
+    }
 }
