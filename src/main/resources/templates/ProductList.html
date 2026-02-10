@@ -9,12 +9,13 @@
 <div class="container">
     <h3>Product List</h3>
     <a href="create" class="btn btn-primary btn-sm mb-3">Create Product</a>
+
     <table class="table table-bordered table-striped">
         <thead>
         <tr>
             <th>Product Name</th>
             <th>Quantity</th>
-        </tr>
+            <th>Action</th> </tr>
         </thead>
         <tbody>
         <tr th:each="product: ${products}">
@@ -22,6 +23,8 @@
             <td th:text="${product.productQuantity}"></td>
             <td>
                 <a th:href="@{/product/edit/{id}(id=${product.productId})}" class="btn btn-sm btn-warning">Edit</a>
+
+                <a th:href="@{/product/delete/{id}(id=${product.productId})}" class="btn btn-sm btn-danger">Delete</a>
             </td>
         </tr>
         </tbody>
