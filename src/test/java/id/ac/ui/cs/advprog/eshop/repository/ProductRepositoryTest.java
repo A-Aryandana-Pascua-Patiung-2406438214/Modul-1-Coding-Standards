@@ -143,4 +143,18 @@ class ProductRepositoryTest {
     void testFindByIdNull() {
         assertNull(productRepository.findById(null));
     }
+
+    @Test
+    void testCreateProductWithNullId() {
+        Product product = new Product();
+        product.setProductId(null); // Paksa null
+        product.setProductName("Sampo Tanpa ID");
+        product.setProductQuantity(100);
+
+        productRepository.create(product);
+
+        // Cek apakah ID-nya otomatis keisi (gak null lagi)
+        assertNotNull(product.getProductId());
+        assertFalse(product.getProductId().isEmpty());
+    }
 }
