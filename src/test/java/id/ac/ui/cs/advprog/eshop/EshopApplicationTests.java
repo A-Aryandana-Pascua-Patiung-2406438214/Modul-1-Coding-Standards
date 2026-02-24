@@ -11,7 +11,7 @@ class EshopApplicationTests {
     }
 
     @Test
-    void main() {
+    void testMain() {
         EshopApplication.main(new String[] {});
     }
 }
