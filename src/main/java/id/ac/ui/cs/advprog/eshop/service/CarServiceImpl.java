@@ -14,10 +14,12 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public Car create(Car car) {
+        if (car.getCarId() == null) {
+            car.setCarId(java.util.UUID.randomUUID().toString());
+        }
         carRepository.create(car);
         return car;
     }
-
     @Override
     public List<Car> findAll() {
         Iterator<Car> carIterator = carRepository.findAll();
