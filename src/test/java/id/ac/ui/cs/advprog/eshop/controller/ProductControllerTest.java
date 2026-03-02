@@ -26,6 +26,9 @@ class ProductControllerTest {
     @MockBean
     private ProductService productService;
 
+    @MockBean
+    private id.ac.ui.cs.advprog.eshop.service.CarServiceImpl carService;
+
     private Product product;
 
     @BeforeEach
