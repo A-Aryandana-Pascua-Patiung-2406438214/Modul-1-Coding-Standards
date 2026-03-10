@@ -31,6 +31,7 @@ class PaymentControllerTest {
     void testPaymentDetailPage() throws Exception {
         mockMvc.perform(get("/payment/detail"))
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("payment"))
                 .andExpect(view().name("payment/detail"));
     }
 }
