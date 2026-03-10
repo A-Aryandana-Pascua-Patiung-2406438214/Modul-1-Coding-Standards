@@ -12,24 +12,15 @@ public class VoucherPayment extends Payment {
 
     private void validateVoucher() {
         String voucherCode = this.getPaymentData().get("voucherCode");
-        boolean isValid = false;
 
         if (voucherCode != null && voucherCode.length() == 16 && voucherCode.startsWith("ESHOP")) {
-            int digitCount = 0;
-            for (int i = 0; i < voucherCode.length(); i++) {
-                if (Character.isDigit(voucherCode.charAt(i))) {
-                    digitCount++;
-                }
-            }
+            long digitCount = voucherCode.chars().filter(Character::isDigit).count();
             if (digitCount == 8) {
-                isValid = true;
+                this.setStatus(PaymentStatus.SUCCESS.getValue());
+                return;
             }
         }
 
-        if (isValid) {
-            this.setStatus(PaymentStatus.SUCCESS.getValue());
-        } else {
-            this.setStatus(PaymentStatus.REJECTED.getValue());
-        }
+        this.setStatus(PaymentStatus.REJECTED.getValue());
     }
 }
