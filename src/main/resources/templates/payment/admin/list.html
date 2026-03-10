@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin - Payment List</title>
+</head>
+<body>
+<h1>All Payments (Admin)</h1>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Payment ID</th>
+        <th>Method</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="payment : ${payments}">
+        <td th:text="${payment.id}">ID</td>
+        <td th:text="${payment.method}">Method</td>
+        <td th:text="${payment.status}">Status</td>
+        <td>
+            <a th:href="@{/payment/admin/detail/{id}(id=${payment.id})}">Manage</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

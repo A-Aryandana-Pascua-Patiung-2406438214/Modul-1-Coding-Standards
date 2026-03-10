@@ -4,21 +4,17 @@ Link Deployment: https://zeroth-eugenia-nanda-pascua-e7ecbd38.koyeb.app
 
 ---
 
-1) Explain what principles you apply to your project!
-Pada proyek ini, saya menerapkan beberapa prinsip SOLID untuk merapikan struktur kode yang ada:
+**1. Reflect based on Percival (2017) proposed self-reflective questions, whether this TDD flow is useful enough for you or not.**
+Alur Test-Driven Development (TDD) yang saya terapkan di modul ini terbukti sangat berguna. Dengan menulis tes terlebih dahulu (fase RED), saya dituntut untuk merancang *interface* dan ekspektasi *behavior* dari kode sebelum terjebak dalam kerumitan detail implementasi. Contohnya, saat mengerjakan `OrderService`, menulis skenario tes terlebih dahulu membuat saya lebih terarah dalam menentukan parameter dan *expected return* dari fungsi-fungsinya.
 
-- Single Responsibility Principle (SRP): Saya memisahkan CarController yang sebelumnya berada di dalam ProductController.java menjadi filenya sendiri. Selain itu, saya memindahkan logika pembuatan UUID mobil yang awalnya ada di CarRepository ke CarServiceImpl. Hal ini karena tugas Repository seharusnya hanya untuk menyimpan dan mengambil data, sedangkan urusan pembuatan ID adalah bagian dari business logic yang menjadi tanggung jawab Service.
+Selain itu, *safety net* dari tes yang sudah berstatus GREEN membuat saya merasa jauh lebih percaya diri saat melakukan *refactoring*. Ketika saya melakukan perubahan *hardcoded string* menjadi `OrderStatus` Enum pada model `Order`, saya bisa langsung memastikan fungsionalitasnya tidak rusak hanya dengan menjalankan tes ulang. Untuk ke depannya, hal yang perlu saya perbaiki adalah lebih membiasakan diri memikirkan skenario *unhappy path* (seperti *invalid ID* atau *invalid status*) di awal pembuatan tes, agar cakupan tes menjadi lebih komprehensif sejak awal siklus TDD.
 
-- Liskov Substitution Principle (LSP): Saya menghapus keyword extends ProductController pada CarController. Karena CarController tidak bisa menggantikan ProductController secara utuh. Keduanya memiliki behavior dan urusan routing yang berbeda, sehingga memaksakan inheritance di sini menyalahi prinsip LSP.
+**2. Reflect whether your tests have successfully followed F.I.R.S.T. principle or not.**
+Secara keseluruhan, unit test yang telah saya buat di sesi tutorial ini sudah mengikuti prinsip F.I.R.S.T.:
+- **Fast:** Tes berjalan sangat cepat (hanya dalam hitungan milidetik) karena terisolasi dengan baik. Pada *service layer* (`OrderServiceImplTest`), saya menggunakan *mocking* dengan Mockito sehingga tes tidak perlu benar-benar mengakses database atau layanan eksternal yang lambat.
+- **Independent:** Penggunaan anotasi `@BeforeEach` pada file *test* memastikan bahwa *setup* data (seperti list of `Product` dan `Order`) selalu di-reset sebelum pengujian baru dimulai. Ini menjamin bahwa satu *test method* tidak akan saling memengaruhi *test method* lainnya.
+- **Repeatable:** Tes memberikan hasil yang konsisten (selalu hijau jika kode benar) tidak peduli berapa kali dijalankan atau di *environment* mana tes tersebut dieksekusi.
+- **Self-Validating:** Pengujian sepenuhnya mengandalkan *assertions* bawaan JUnit (seperti `assertEquals`, `assertNull`, `assertThrows`). Output akhirnya langsung memberikan konfirmasi lulus (hijau) atau gagal (merah) secara otomatis, tanpa memerlukan inspeksi manual pada *console log*.
+- **Timely:** Tes ditulis tepat waktu, yaitu persis sebelum kode *production* diimplementasikan, murni mengikuti siklus TDD (Red-Green-Refactor).
 
-- Dependency Inversion Principle (DIP): Pada file CarController, saya mengubah injeksi dependensi yang awalnya bergantung pada concrete class (CarServiceImpl) menjadi bergantung pada interface (CarService). Hal ini membuat controller tidak terikat langsung pada detail implementasi spesifik.
-
-2) Explain the advantages of applying SOLID principles to your project with examples.
-Keuntungan utama menerapkan prinsip SOLID adalah kode menjadi jauh lebih rapi, terstruktur, dan mudah untuk dites maupun dikembangkan.
-
-Contoh: Dengan menerapkan SRP (memisahkan CarController dan ProductController), apabila suatu saat saya ingin menambahkan fitur atau routing khusus untuk mobil, saya hanya perlu mengedit file CarController tanpa perlu khawatir akan merusak logika pada fitur produk. Selain itu, dengan menerapkan DIP, saya bisa lebih mudah membuat mocking untuk unit test di CarController karena saya hanya perlu melihat kontrak dari interface CarService, tanpa peduli bagaimana logic di dalam CarServiceImpl bekerja.
-
-3) Explain the disadvantages of not applying SOLID principles to your project with examples.
-Jika tidak menerapkan prinsip SOLID, kode akan cenderung memiliki coupling yang tinggi (saling ketergantungan), sehingga satu perubahan kecil bisa memicu error di banyak tempat yang tidak terduga.
-
-Contoh: Saat CarController masih menjadi child dari ProductController (pelanggaran LSP), saya sempat mengalami error UnsatisfiedDependencyException saat menjalankan unit test untuk Product. Hal ini terjadi karena Spring Boot ikut mencoba me-load dependensi milik Car padahal saya hanya ingin mengetes Product. Contoh lainnya, jika logika generate UUID tetap dibiarkan di CarRepository (pelanggaran SRP), developer lain yang mencari bug terkait ID akan kesulitan, karena umumnya urusan modifikasi data sebelum disimpan adalah tugas layer Service, bukan Repository.
+Hal yang perlu saya perhatikan untuk pembuatan tes selanjutnya adalah menjaga agar satu metode tes sebisa mungkin hanya melakukan *assert* terhadap satu kelakuan (*single behavior*) spesifik, guna meningkatkan aspek *Independent* secara maksimal.
