@@ -11,14 +11,18 @@ public class BankTransferPayment extends Payment {
     }
 
     private void validateBankTransfer() {
-        String bankName = this.getPaymentData().get("bankName");
-        String referenceCode = this.getPaymentData().get("referenceCode");
+        Map<String, String> data = this.getPaymentData();
+        String bankName = data.get("bankName");
+        String referenceCode = data.get("referenceCode");
 
-        if (bankName == null || bankName.trim().isEmpty() ||
-                referenceCode == null || referenceCode.trim().isEmpty()) {
+        if (isInvalid(bankName) || isInvalid(referenceCode)) {
             this.setStatus(PaymentStatus.REJECTED.getValue());
         } else {
             this.setStatus(PaymentStatus.SUCCESS.getValue());
         }
+    }
+
+    private boolean isInvalid(String value) {
+        return value == null || value.isBlank();
     }
 }
