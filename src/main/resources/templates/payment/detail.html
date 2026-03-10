@@ -1,0 +1,9 @@
+<p>ID: <span th:text="${payment?.id}"></span></p>
+<p>Method: <span th:text="${payment?.method}"></span></p>
+<p>Status: <span th:text="${payment?.status}"></span></p>
+
+<div th:if="${payment != null}">
+    <form th:action="@{/payment/admin/set-status/{id}(id=${payment.id})}" method="post">
+        ... isi form ...
+    </form>
+</div>
