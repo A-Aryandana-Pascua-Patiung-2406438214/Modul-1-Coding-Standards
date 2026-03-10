@@ -16,12 +16,10 @@ public class PaymentRepository {
     }
 
     public Payment findById(String id) {
-        for (Payment payment : paymentData) {
-            if (payment.getId().equals(id)) {
-                return payment;
-            }
-        }
-        return null;
+        return paymentData.stream()
+                .filter(p -> p.getId().equals(id))
+                .findFirst()
+                .orElse(null);
     }
 
     public List<Payment> findAll() {
